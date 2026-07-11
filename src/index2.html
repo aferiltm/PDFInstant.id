@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDFInstantId — Gabung & Pisah PDF</title>
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/favicon/favicon-16x16.png"
+    />
+    <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="css/output.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="js/tailwind.js"></script>
+  </head>
+  <body class="min-h-screen relative overflow-x-hidden">
+    <!-- Background ambience -->
+    <div class="noise"></div>
+    <div
+      class="orb w-96 h-96 bg-teal-500 opacity-10"
+      style="top: -10%; left: -5%"
+    ></div>
+    <div
+      class="orb w-80 h-80 bg-emerald-600 opacity-8"
+      style="bottom: 10%; right: -5%"
+    ></div>
+    <div
+      class="orb w-64 h-64 bg-cyan-400 opacity-6"
+      style="top: 50%; left: 50%; transform: translate(-50%, -50%)"
+    ></div>
+
+    <!-- Main content -->
+    <div class="relative z-10 min-h-screen flex flex-col">
+      <!-- Header -->
+      <header
+        class="px-4 sm:px-8 py-6 flex items-center justify-between glass sticky top-0 z-50 animate-fade-in"
+      >
+        <div class="flex items-center gap-3">
+          <!-- <div
+            class="w-9 h-9 rounded-xl btn-primary flex items-center justify-center"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          </div> -->
+          <img
+            src="assets/img/gambar.png"
+            class="w-9 h-9 rounded-xl btn-primary"
+            alt="PDFInstantId Logo"
+          />
+          <span class="font-display font-bold text-xl text-white"
+            >PDF<span class="text-teal-400">InstantId</span></span
+          >
+        </div>
+        <span
+          class="text-xs text-teal-400 badge px-3 py-1 rounded-full font-body"
+          >100% Gratis & Privat</span
+        >
+        <!-- <select id="languageSwitcher" class="lang-select">
+          <option value="id">🇮🇩</option>
+          <option value="en">🇺🇸</option>
+          <option value="fil">🇵🇭</option>
+        </select> -->
+      </header>
+
+      <!-- Hero -->
+      <section
+        class="px-4 sm:px-8 pt-12 pb-8 text-center animate-slide-up"
+        style="animation-delay: 0.1s"
+      >
+        <h1
+          class="font-display font-extrabold text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-4"
+        >
+          Kelola PDF kamu<br />
+          <span class="text-teal-400 bg-clip-text">dengan mudah.</span>
+        </h1>
+        <p
+          class="font-body text-slate-400 text-base sm:text-lg max-w-xl mx-auto"
+        >
+          Gabungkan beberapa PDF menjadi satu, atau pisahkan halaman PDF sesuai
+          kebutuhanmu. Gratis, cepat, dan aman — semua diproses di browser.
+        </p>
+      </section>
+
+      <!-- Tab Switcher -->
+      <div
+        class="px-4 sm:px-8 flex justify-center mb-8 animate-slide-up"
+        style="animation-delay: 0.2s"
+      >
+        <div class="glass rounded-2xl p-1.5 flex gap-1 w-full max-w-sm">
+          <button
+            id="tab-merge"
+            onclick="switchTab('merge')"
+            class="tab-active flex-1 py-2.5 px-4 rounded-xl font-display font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+            Gabungkan
+          </button>
+          <button
+            id="tab-split"
+            onclick="switchTab('split')"
+            class="flex-1 py-2.5 px-4 rounded-xl font-display font-semibold text-sm text-slate-400 transition-all duration-300 hover:text-white flex items-center justify-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+              />
+            </svg>
+            Pisahkan
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Cards -->
+      <main class="flex-1 px-4 sm:px-8 max-w-3xl mx-auto w-full pb-16">
+        <!-- ===== MERGE TAB ===== -->
+        <div
+          id="panel-merge"
+          class="animate-slide-up"
+          style="animation-delay: 0.3s"
+        >
+          <div class="glow-border rounded-3xl p-6 sm:p-8 mb-6">
+            <h2 class="font-display font-bold text-white text-xl mb-2">
+              Gabungkan PDF
+            </h2>
+            <p class="text-slate-400 text-sm mb-6 font-body">
+              Seret & lepas untuk menyusun urutan halaman, lalu unduh hasilnya.
+            </p>
+
+            <!-- Drop Zone -->
+            <div
+              id="merge-drop"
+              class="drop-zone rounded-2xl p-8 sm:p-12 text-center mb-6 cursor-pointer"
+              onclick="document.getElementById('merge-input').click()"
+              ondragover="handleDragOver(event, 'merge-drop')"
+              ondragleave="handleDragLeave(event, 'merge-drop')"
+              ondrop="handleDrop(event, 'merge')"
+            >
+              <div
+                class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                style="background: rgba(20, 184, 166, 0.12)"
+              >
+                <svg
+                  class="w-8 h-8 text-teal-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+              </div>
+              <p class="font-display font-semibold text-white text-base mb-1">
+                Klik atau seret file PDF di sini
+              </p>
+              <p class="text-slate-500 text-sm font-body">
+                Pilih beberapa file sekaligus · PDF saja
+              </p>
+            </div>
+            <input
+              id="merge-input"
+              type="file"
+              accept=".pdf"
+              multiple
+              class="hidden"
+              onchange="handleMergeFiles(event)"
+            />
+
+            <!-- File List -->
+            <div id="merge-list" class="space-y-2 mb-6 hidden">
+              <div class="flex items-center justify-between mb-3">
+                <p
+                  class="text-slate-400 text-xs font-body uppercase tracking-wider"
+                >
+                  Urutan File
+                </p>
+                <button
+                  onclick="clearMerge()"
+                  class="btn-ghost text-xs py-1 px-3 rounded-lg"
+                >
+                  Hapus Semua
+                </button>
+              </div>
+              <ul id="merge-sortable" class="space-y-2"></ul>
+              <button
+                onclick="document.getElementById('merge-input').click()"
+                class="btn-ghost w-full py-3 rounded-xl text-sm font-display font-medium flex items-center justify-center gap-2 mt-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                Tambah File Lagi
+              </button>
+            </div>
+
+            <!-- Progress -->
+            <div id="merge-progress" class="hidden mb-4">
+              <div
+                class="flex justify-between text-xs text-slate-400 mb-2 font-body"
+              >
+                <span>Menggabungkan...</span>
+                <span id="merge-pct">0%</span>
+              </div>
+              <div class="h-1.5 bg-dark-600 rounded-full overflow-hidden">
+                <div
+                  id="merge-bar"
+                  class="progress-bar h-full rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <button
+              id="merge-btn"
+              onclick="mergePDFs()"
+              disabled
+              class="btn-primary w-full py-4 rounded-2xl font-display font-bold text-base flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              Gabungkan & Unduh PDF
+            </button>
+          </div>
+
+          <!-- Merge Result -->
+          <div id="merge-result" class="result-card rounded-2xl p-5 hidden">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center flex-shrink-0"
+              >
+                <svg
+                  class="w-5 h-5 text-teal-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-display font-semibold text-white text-sm">
+                  PDF berhasil digabungkan!
+                </p>
+                <p
+                  id="merge-result-info"
+                  class="text-slate-400 text-xs font-body mt-0.5"
+                ></p>
+              </div>
+              <a
+                id="merge-download"
+                href="#"
+                download="gabungan.pdf"
+                class="btn-primary px-4 py-2 rounded-xl text-sm font-display font-semibold flex-shrink-0"
+              >
+                Unduh
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SPLIT TAB ===== -->
+        <div
+          id="panel-split"
+          class="hidden animate-slide-up"
+          style="animation-delay: 0.3s"
+        >
+          <div class="glow-border rounded-3xl p-6 sm:p-8 mb-6">
+            <h2 class="font-display font-bold text-white text-xl mb-2">
+              Pisahkan PDF
+            </h2>
+            <p class="text-slate-400 text-sm mb-6 font-body">
+              Upload satu file PDF, lalu tentukan cara memisahkannya.
+            </p>
+
+            <!-- Drop Zone -->
+            <div
+              id="split-drop"
+              class="drop-zone rounded-2xl p-8 sm:p-12 text-center mb-6 cursor-pointer"
+              onclick="document.getElementById('split-input').click()"
+              ondragover="handleDragOver(event, 'split-drop')"
+              ondragleave="handleDragLeave(event, 'split-drop')"
+              ondrop="handleDrop(event, 'split')"
+            >
+              <div
+                class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                style="background: rgba(20, 184, 166, 0.12)"
+              >
+                <svg
+                  class="w-8 h-8 text-teal-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+              </div>
+              <p class="font-display font-semibold text-white text-base mb-1">
+                Klik atau seret satu file PDF
+              </p>
+              <p class="text-slate-500 text-sm font-body">
+                Satu file PDF · Ukuran maks ~100MB
+              </p>
+            </div>
+            <input
+              id="split-input"
+              type="file"
+              accept=".pdf"
+              class="hidden"
+              onchange="handleSplitFile(event)"
+            />
+
+            <!-- File Info -->
+            <div id="split-file-info" class="hidden mb-6">
+              <div class="file-card rounded-xl p-4 flex items-center gap-4">
+                <div
+                  class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style="background: rgba(20, 184, 166, 0.15)"
+                >
+                  <svg
+                    class="w-5 h-5 text-teal-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p
+                    id="split-fname"
+                    class="text-white text-sm font-display font-semibold truncate"
+                  ></p>
+                  <p
+                    id="split-finfo"
+                    class="text-slate-400 text-xs font-body mt-0.5"
+                  ></p>
+                </div>
+                <button
+                  onclick="clearSplit()"
+                  class="text-slate-500 hover:text-red-400 transition-colors p-1"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Split Options -->
+            <div id="split-options" class="hidden mb-6 space-y-4">
+              <p
+                class="text-slate-400 text-xs font-body uppercase tracking-wider"
+              >
+                Mode Pisah
+              </p>
+
+              <!-- Mode selector -->
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  onclick="setSplitMode('all')"
+                  id="mode-all"
+                  class="split-mode-btn py-3 px-2 rounded-xl text-center text-xs font-display font-semibold border border-teal-500/50 text-teal-400 bg-teal-500/10 transition-all"
+                >
+                  Semua Halaman
+                </button>
+                <button
+                  onclick="setSplitMode('range')"
+                  id="mode-range"
+                  class="split-mode-btn py-3 px-2 rounded-xl text-center text-xs font-display font-semibold border border-dark-500 text-slate-400 hover:border-teal-500/30 transition-all"
+                >
+                  Rentang
+                </button>
+                <button
+                  onclick="setSplitMode('interval')"
+                  id="mode-interval"
+                  class="split-mode-btn py-3 px-2 rounded-xl text-center text-xs font-display font-semibold border border-dark-500 text-slate-400 hover:border-teal-500/30 transition-all"
+                >
+                  Per N Halaman
+                </button>
+              </div>
+
+              <!-- Mode: all -->
+              <div
+                id="opt-all"
+                class="glass rounded-xl p-4 text-sm text-slate-300 font-body"
+              >
+                Setiap halaman akan dijadikan file PDF terpisah.
+              </div>
+
+              <!-- Mode: range -->
+              <div id="opt-range" class="hidden">
+                <!-- Toolbar -->
+                <div class="glass rounded-xl p-3 mb-3 select-toolbar">
+                  <span
+                    id="range-sel-count"
+                    class="text-teal-400 text-xs font-display font-semibold badge px-2.5 py-1 rounded-lg"
+                    >0 halaman dipilih</span
+                  >
+                  <button
+                    onclick="selectAllPages()"
+                    class="btn-ghost text-xs py-1 px-3 rounded-lg"
+                  >
+                    Pilih Semua
+                  </button>
+                  <button
+                    onclick="deselectAllPages()"
+                    class="btn-ghost text-xs py-1 px-3 rounded-lg"
+                  >
+                    Hapus Pilihan
+                  </button>
+                  <div class="ml-auto flex items-center gap-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        id="merge-selected-cb"
+                        class="accent-teal-500 w-3.5 h-3.5"
+                      />
+                      <span class="text-slate-400 text-xs font-body"
+                        >Gabung jadi 1 file</span
+                      >
+                    </label>
+                  </div>
+                </div>
+                <!-- Thumbnail Grid -->
+                <div id="thumb-grid-wrap" class="glass rounded-xl p-3">
+                  <div
+                    id="thumb-loading"
+                    class="flex flex-col items-center gap-3 py-8 text-slate-500"
+                  >
+                    <svg
+                      class="w-8 h-8 animate-spin text-teal-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8v8z"
+                      />
+                    </svg>
+                    <span class="text-sm font-body"
+                      >Memuat pratinjau halaman...</span
+                    >
+                  </div>
+                  <div id="thumb-grid" class="thumb-grid hidden"></div>
+                </div>
+              </div>
+
+              <!-- Mode: interval -->
+              <div id="opt-interval" class="glass rounded-xl p-4 hidden">
+                <label class="text-slate-300 text-sm font-body mb-2 block"
+                  >Pisah setiap berapa halaman?</label
+                >
+                <input
+                  id="interval-input"
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="split-input w-24 px-4 py-2.5 rounded-xl text-sm font-body"
+                />
+                <span class="text-slate-400 text-sm font-body ml-2"
+                  >halaman per file</span
+                >
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div id="split-progress" class="hidden mb-4">
+              <div
+                class="flex justify-between text-xs text-slate-400 mb-2 font-body"
+              >
+                <span>Memisahkan...</span>
+                <span id="split-pct">0%</span>
+              </div>
+              <div class="h-1.5 bg-dark-600 rounded-full overflow-hidden">
+                <div
+                  id="split-bar"
+                  class="progress-bar h-full rounded-full"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Action -->
+            <button
+              id="split-btn"
+              onclick="splitPDF()"
+              disabled
+              class="btn-primary w-full py-4 rounded-2xl font-display font-bold text-base flex items-center justify-center gap-2"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+                />
+              </svg>
+              Pisahkan & Unduh ZIP
+            </button>
+          </div>
+
+          <!-- Split Results -->
+          <div id="split-results" class="hidden">
+            <div class="flex items-center justify-between mb-3">
+              <p
+                class="text-slate-400 text-xs font-body uppercase tracking-wider"
+              >
+                Hasil Pemisahan
+              </p>
+              <button
+                id="download-all-btn"
+                onclick="downloadAllSplit()"
+                class="btn-primary py-2 px-4 rounded-xl text-xs font-display font-semibold flex items-center gap-1.5"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                Unduh Semua (ZIP)
+              </button>
+            </div>
+            <div id="split-file-list" class="space-y-2"></div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer
+        class="text-center pb-8 text-slate-600 text-xs font-body animate-fade-in"
+        style="animation-delay: 0.5s"
+      >
+        File tidak dikirim ke server — semua diproses langsung di browser kamu
+        🔒
+      </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
