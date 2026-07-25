@@ -329,6 +329,52 @@ body {
   border-color: rgba(45, 212, 191, 0.35);
 }
 
+/* Drag handle used to reorder pages on the Rotate tab */
+.page-drag-handle {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(148, 163, 184, 0.5);
+  background: rgba(10, 15, 14, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  z-index: 3;
+  transition: all 0.15s ease;
+  color: #94a3b8;
+  padding: 0;
+}
+.page-drag-handle:hover {
+  border-color: rgba(45, 212, 191, 0.7);
+  color: #5eead4;
+}
+.page-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Small color strip identifying which uploaded file a page belongs to */
+.page-file-strip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2;
+  border-radius: 8px 8px 0 0;
+}
+
+.page-thumb.sortable-ghost {
+  opacity: 0.35;
+}
+.page-thumb.sortable-chosen {
+  cursor: grabbing;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
 /* Language switcher dropdown */
 /* #lang-menu {
   animation: slideUp 0.18s ease-out;

@@ -828,8 +828,8 @@
               data-i18n="rotate_desc"
               class="text-slate-400 text-sm mb-6 font-body"
             >
-              Upload PDF, lalu putar halaman satu per satu atau sekaligus
-              sebelum diunduh.
+              Upload satu atau beberapa PDF, susun ulang urutan halamannya, lalu
+              putar sebelum diunduh.
             </p>
 
             <!-- Drop Zone -->
@@ -863,73 +863,65 @@
                 data-i18n="rotate_drop_title"
                 class="font-display font-semibold text-white text-base mb-1"
               >
-                Klik atau seret satu file PDF
+                Klik atau seret file PDF di sini
               </p>
               <p
                 data-i18n="rotate_drop_sub"
                 class="text-slate-500 text-sm font-body"
               >
-                Satu file PDF · Ukuran maks ~100MB
+                Pilih beberapa file sekaligus · PDF saja
               </p>
             </div>
             <input
               id="rotate-input"
               type="file"
               accept=".pdf"
+              multiple
               class="hidden"
               onchange="handleRotateFile(event)"
             />
 
-            <!-- File Info -->
+            <!-- File List -->
             <div id="rotate-file-info" class="hidden mb-6">
-              <div class="file-card rounded-xl p-4 flex items-center gap-4">
-                <div
-                  class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                  style="background: rgba(20, 184, 166, 0.15)"
+              <div class="flex items-center justify-between mb-3">
+                <p
+                  data-i18n="rotate_files_label"
+                  class="text-slate-400 text-xs font-body uppercase tracking-wider"
                 >
-                  <svg
-                    class="w-5 h-5 text-teal-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                  <p
-                    id="rotate-fname"
-                    class="text-white text-sm font-display font-semibold truncate"
-                  ></p>
-                  <p
-                    id="rotate-finfo"
-                    class="text-slate-400 text-xs font-body mt-0.5"
-                  ></p>
-                </div>
+                  Daftar File
+                </p>
                 <button
                   onclick="clearRotate()"
-                  class="text-slate-500 hover:text-red-400 transition-colors p-1"
+                  data-i18n="merge_clear_all"
+                  class="btn-ghost text-xs py-1 px-3 rounded-lg"
                 >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  Hapus Semua
                 </button>
               </div>
+              <div id="rotate-file-list" class="space-y-2"></div>
+              <p
+                id="rotate-file-summary"
+                class="text-slate-500 text-xs font-body mt-3"
+              ></p>
+              <button
+                onclick="document.getElementById('rotate-input').click()"
+                class="btn-ghost w-full py-3 rounded-xl text-sm font-display font-medium flex items-center justify-center gap-2 mt-3"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <span data-i18n="merge_add_more">Tambah File Lagi</span>
+              </button>
             </div>
 
             <!-- Rotate Options / Toolbar -->
@@ -1021,8 +1013,9 @@
                 data-i18n="rotate_hint"
                 class="text-slate-500 text-xs font-body px-1"
               >
-                Klik halaman untuk memilih. Klik ikon putar di tengah thumbnail
-                untuk memutar halaman tersebut secara langsung.
+                Klik halaman untuk memilih. Seret ikon di pojok kanan atas
+                thumbnail untuk mengubah urutan halaman. Klik ikon putar di
+                tengah untuk memutar halaman itu secara langsung.
               </p>
 
               <!-- Thumbnail Grid -->

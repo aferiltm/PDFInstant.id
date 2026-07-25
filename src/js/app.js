@@ -14,7 +14,8 @@ const translations = {
     tab_split: "Pisahkan",
     tab_rotate: "Putar",
     merge_heading: "Gabungkan PDF",
-    merge_desc: "Seret & lepas untuk menyusun urutan halaman, lalu unduh hasilnya.",
+    merge_desc:
+      "Seret & lepas untuk menyusun urutan halaman, lalu unduh hasilnya.",
     merge_drop_title: "Klik atau seret file PDF di sini",
     merge_drop_sub: "Pilih beberapa file sekaligus · PDF saja",
     merge_order_label: "Urutan File",
@@ -45,16 +46,18 @@ const translations = {
     split_results_label: "Hasil Pemisahan",
     split_download_all: "Unduh Semua (ZIP)",
     rotate_heading: "Putar Halaman PDF",
-    rotate_desc: "Upload PDF, lalu putar halaman satu per satu atau sekaligus sebelum diunduh.",
-    rotate_drop_title: "Klik atau seret satu file PDF",
-    rotate_drop_sub: "Satu file PDF · Ukuran maks ~100MB",
+    rotate_desc:
+      "Upload satu atau beberapa PDF, susun ulang urutan halamannya, lalu putar sebelum diunduh.",
+    rotate_drop_title: "Klik atau seret file PDF di sini",
+    rotate_drop_sub: "Pilih beberapa file sekaligus · PDF saja",
+    rotate_files_label: "Daftar File",
     rotate_select_all: "Pilih Semua",
     rotate_deselect_all: "Hapus Pilihan",
     rotate_left_title: "Putar kiri",
     rotate_right_title: "Putar kanan",
     rotate_reset_title: "Atur ulang semua rotasi",
     rotate_hint:
-      "Klik halaman untuk memilih. Klik ikon putar di tengah thumbnail untuk memutar halaman tersebut secara langsung.",
+      "Klik halaman untuk memilih. Seret ikon di pojok kanan atas thumbnail untuk mengubah urutan halaman. Klik ikon putar di tengah untuk memutar halaman itu secara langsung.",
     rotate_thumb_loading: "Memuat pratinjau halaman...",
     rotate_thumb_error: "Gagal memuat pratinjau.",
     rotate_progress_label: "Memutar halaman...",
@@ -63,11 +66,14 @@ const translations = {
     rotate_download: "Unduh",
     rotate_page_title: "Putar halaman ini",
     rotate_select_title: "Pilih halaman ini",
+    rotate_drag_title: "Seret untuk mengubah urutan",
+    rotate_files_summary: "{files} file · {pages} halaman · {size}",
     footer_text:
       "File tidak dikirim ke server — semua diproses langsung di browser kamu 🔒",
     toast_only_pdf: "Hanya file PDF yang diterima!",
     toast_read_fail: "Gagal membaca PDF. Coba file lain.",
-    toast_process_fail_merge: "Gagal memproses PDF. Pastikan file tidak terenkripsi.",
+    toast_process_fail_merge:
+      "Gagal memproses PDF. Pastikan file tidak terenkripsi.",
     toast_process_fail_generic: "Gagal memproses PDF.",
     toast_select_min_page: "Pilih minimal satu halaman!",
     toast_merge_success: "PDF berhasil digabungkan!",
@@ -89,7 +95,8 @@ const translations = {
     tab_split: "Split",
     tab_rotate: "Rotate",
     merge_heading: "Merge PDFs",
-    merge_desc: "Drag & drop to arrange the page order, then download the result.",
+    merge_desc:
+      "Drag & drop to arrange the page order, then download the result.",
     merge_drop_title: "Click or drag PDF files here",
     merge_drop_sub: "Select multiple files at once · PDF only",
     merge_order_label: "File Order",
@@ -120,16 +127,18 @@ const translations = {
     split_results_label: "Split Results",
     split_download_all: "Download All (ZIP)",
     rotate_heading: "Rotate PDF Pages",
-    rotate_desc: "Upload a PDF, then rotate pages individually or all at once before downloading.",
-    rotate_drop_title: "Click or drag a single PDF file",
-    rotate_drop_sub: "One PDF file · Max size ~100MB",
+    rotate_desc:
+      "Upload one or more PDFs, reorder the pages however you like, then rotate before downloading.",
+    rotate_drop_title: "Click or drag PDF files here",
+    rotate_drop_sub: "Select multiple files at once · PDF only",
+    rotate_files_label: "File List",
     rotate_select_all: "Select All",
     rotate_deselect_all: "Clear Selection",
     rotate_left_title: "Rotate left",
     rotate_right_title: "Rotate right",
     rotate_reset_title: "Reset all rotations",
     rotate_hint:
-      "Click a page to select it. Click the rotate icon in the middle of a thumbnail to rotate that page directly.",
+      "Click a page to select it. Drag the handle in the top-right corner of a thumbnail to reorder pages. Click the rotate icon in the middle to rotate that page directly.",
     rotate_thumb_loading: "Loading page previews...",
     rotate_thumb_error: "Failed to load previews.",
     rotate_progress_label: "Rotating pages...",
@@ -138,11 +147,14 @@ const translations = {
     rotate_download: "Download",
     rotate_page_title: "Rotate this page",
     rotate_select_title: "Select this page",
+    rotate_drag_title: "Drag to reorder",
+    rotate_files_summary: "{files} files · {pages} pages · {size}",
     footer_text:
       "Files are never sent to a server — everything is processed right in your browser 🔒",
     toast_only_pdf: "Only PDF files are accepted!",
     toast_read_fail: "Failed to read the PDF. Try another file.",
-    toast_process_fail_merge: "Failed to process the PDF. Make sure the file isn't encrypted.",
+    toast_process_fail_merge:
+      "Failed to process the PDF. Make sure the file isn't encrypted.",
     toast_process_fail_generic: "Failed to process the PDF.",
     toast_select_min_page: "Select at least one page!",
     toast_merge_success: "PDF merged successfully!",
@@ -164,7 +176,8 @@ const translations = {
     tab_split: "Hatiin",
     tab_rotate: "Paikutin",
     merge_heading: "Pagsamahin ang PDF",
-    merge_desc: "I-drag at i-drop para ayusin ang pagkakasunod-sunod ng pahina, pagkatapos i-download ang resulta.",
+    merge_desc:
+      "I-drag at i-drop para ayusin ang pagkakasunod-sunod ng pahina, pagkatapos i-download ang resulta.",
     merge_drop_title: "I-click o i-drag ang mga file PDF dito",
     merge_drop_sub: "Pumili ng maraming file nang sabay · PDF lang",
     merge_order_label: "Pagkakasunod ng File",
@@ -175,7 +188,8 @@ const translations = {
     merge_success_title: "Matagumpay na napagsama ang PDF!",
     merge_download: "I-download",
     split_heading: "Hatiin ang PDF",
-    split_desc: "Mag-upload ng isang file PDF, pagkatapos ay piliin kung paano ito hahatiin.",
+    split_desc:
+      "Mag-upload ng isang file PDF, pagkatapos ay piliin kung paano ito hahatiin.",
     split_drop_title: "I-click o i-drag ang isang file PDF",
     split_drop_sub: "Isang file PDF · Max na sukat ~100MB",
     split_mode_label: "Mode ng Paghati",
@@ -195,16 +209,18 @@ const translations = {
     split_results_label: "Resulta ng Paghati",
     split_download_all: "I-download Lahat (ZIP)",
     rotate_heading: "Paikutin ang mga Pahina ng PDF",
-    rotate_desc: "Mag-upload ng PDF, pagkatapos ay paikutin ang mga pahina nang isa-isa o sabay-sabay bago i-download.",
-    rotate_drop_title: "I-click o i-drag ang isang file PDF",
-    rotate_drop_sub: "Isang file PDF · Max na sukat ~100MB",
+    rotate_desc:
+      "Mag-upload ng isa o maraming PDF, ayusin ang pagkakasunod-sunod ng pahina, pagkatapos paikutin bago i-download.",
+    rotate_drop_title: "I-click o i-drag ang mga file PDF dito",
+    rotate_drop_sub: "Pumili ng maraming file nang sabay · PDF lang",
+    rotate_files_label: "Listahan ng File",
     rotate_select_all: "Piliin Lahat",
     rotate_deselect_all: "Alisin ang Pinili",
     rotate_left_title: "Paikutin pakaliwa",
     rotate_right_title: "Paikutin pakanan",
     rotate_reset_title: "I-reset lahat ng rotation",
     rotate_hint:
-      "I-click ang pahina para piliin ito. I-click ang icon ng pag-ikot sa gitna ng thumbnail para paikutin agad ang pahinang iyon.",
+      "I-click ang pahina para piliin ito. I-drag ang hawakan sa kanang-itaas ng thumbnail para ayusin ang pagkakasunod-sunod ng mga pahina. I-click ang icon ng pag-ikot sa gitna para paikutin agad ang pahinang iyon.",
     rotate_thumb_loading: "Nilo-load ang preview ng pahina...",
     rotate_thumb_error: "Hindi na-load ang preview.",
     rotate_progress_label: "Pinapaikot ang mga pahina...",
@@ -213,11 +229,14 @@ const translations = {
     rotate_download: "I-download",
     rotate_page_title: "Paikutin ang pahinang ito",
     rotate_select_title: "Piliin ang pahinang ito",
+    rotate_drag_title: "I-drag para ayusin ang pagkakasunod-sunod",
+    rotate_files_summary: "{files} file · {pages} pahina · {size}",
     footer_text:
       "Hindi ipinapadala ang mga file sa server — lahat ay pinoproseso mismo sa browser mo 🔒",
     toast_only_pdf: "PDF file lang ang tinatanggap!",
     toast_read_fail: "Hindi nabasa ang PDF. Subukan ang ibang file.",
-    toast_process_fail_merge: "Hindi naproseso ang PDF. Siguraduhing hindi naka-encrypt ang file.",
+    toast_process_fail_merge:
+      "Hindi naproseso ang PDF. Siguraduhing hindi naka-encrypt ang file.",
     toast_process_fail_generic: "Hindi naproseso ang PDF.",
     toast_select_min_page: "Pumili ng kahit isang pahina!",
     toast_merge_success: "Matagumpay na na-merge ang PDF!",
@@ -274,6 +293,9 @@ function applyTranslations() {
   // Refresh dynamic, count-dependent labels
   updateSelCount("range-sel-count", selectedPages.size);
   updateSelCount("rotate-sel-count", selectedRotatePages.size);
+  if (typeof rotateFileEntries !== "undefined" && rotateFileEntries.length) {
+    renderRotateFileList();
+  }
 }
 
 function toggleLangMenu() {
@@ -305,19 +327,44 @@ let mergeSortable = null;
 let selectedPages = new Set(); // 0-indexed
 let thumbsRendered = false;
 
-let rotateFile = null;
-let rotatePageCount = 0;
-let rotateBaseRotations = []; // original /Rotate angle read from the PDF, per page
-let rotateDeltas = []; // extra rotation applied by the user (multiples of 90)
-let selectedRotatePages = new Set();
+let rotateFileEntries = []; // { uid, file, numPages, pdfjsDoc }
+let rotatePages = []; // ordered list: { uid, fileUid, pageIndexInFile, baseRotation, delta }
+let selectedRotatePages = new Set(); // holds page uid's
 let rotateThumbsRendered = false;
+let rotateSortable = null;
+let nextRotateFileUid = 0;
+let nextRotatePageUid = 0;
+const ROTATE_FILE_COLORS = [
+  "#14b8a6",
+  "#a855f7",
+  "#f59e0b",
+  "#3b82f6",
+  "#ec4899",
+  "#84cc16",
+  "#ef4444",
+  "#06b6d4",
+];
+function rotateFileColor(fileUid) {
+  return ROTATE_FILE_COLORS[fileUid % ROTATE_FILE_COLORS.length];
+}
+function escapeHtml(str) {
+  const div = document.createElement("div");
+  div.textContent = str;
+  return div.innerHTML;
+}
 
 // ─── Tab Switching ──────────────────────────────────
 function switchTab(tab) {
-  const panels = { merge: "panel-merge", split: "panel-split", rotate: "panel-rotate" };
+  const panels = {
+    merge: "panel-merge",
+    split: "panel-split",
+    rotate: "panel-rotate",
+  };
   const tabs = { merge: "tab-merge", split: "tab-split", rotate: "tab-rotate" };
   Object.keys(panels).forEach((key) => {
-    document.getElementById(panels[key]).classList.toggle("hidden", key !== tab);
+    document
+      .getElementById(panels[key])
+      .classList.toggle("hidden", key !== tab);
   });
   Object.keys(tabs).forEach((key) => {
     const btn = document.getElementById(tabs[key]);
@@ -349,7 +396,7 @@ function handleDrop(e, type) {
   if (!files.length) return showToast(t("toast_only_pdf"), "error");
   if (type === "merge") addMergeFiles(files);
   else if (type === "split") setSplitFile(files[0]);
-  else if (type === "rotate") setRotateFile(files[0]);
+  else if (type === "rotate") addRotateFiles(files);
 }
 
 // ─── MERGE ──────────────────────────────────────────
@@ -729,7 +776,10 @@ async function splitPDF() {
       showProgress("split", false);
       renderSplitResults();
       btn.disabled = false;
-      showToast(t("toast_split_success", { count: splitResults.length }), "success");
+      showToast(
+        t("toast_split_success", { count: splitResults.length }),
+        "success",
+      );
     }, 400);
   } catch (err) {
     showProgress("split", false);
@@ -797,82 +847,206 @@ async function downloadAllSplit() {
 
 // ─── ROTATE ─────────────────────────────────────────
 function handleRotateFile(e) {
-  const f = e.target.files[0];
-  if (f) setRotateFile(f);
+  const files = Array.from(e.target.files);
+  if (files.length) addRotateFiles(files);
   e.target.value = "";
 }
 
-async function setRotateFile(f) {
-  if (f.type !== "application/pdf")
-    return showToast(t("toast_only_pdf"), "error");
-  rotateFile = f;
-  rotateThumbsRendered = false;
-  selectedRotatePages = new Set();
+async function getRotateFileEntry(fileUid) {
+  return rotateFileEntries.find((entry) => entry.uid === fileUid);
+}
 
-  try {
-    const buf = await f.arrayBuffer();
-    const { PDFDocument } = PDFLib;
-    const pdf = await PDFDocument.load(buf);
-    rotatePageCount = pdf.getPageCount();
-    rotateBaseRotations = pdf.getPages().map((p) => p.getRotation().angle || 0);
-    rotateDeltas = new Array(rotatePageCount).fill(0);
-
-    document.getElementById("rotate-fname").textContent = f.name;
-    document.getElementById("rotate-finfo").textContent =
-      `${rotatePageCount} ${t("pages_unit")} · ${formatSize(f.size)}`;
-    document.getElementById("rotate-file-info").classList.remove("hidden");
-    document.getElementById("rotate-options").classList.remove("hidden");
-    document.getElementById("rotate-btn").disabled = false;
-    document.getElementById("rotate-result").classList.add("hidden");
-
-    document.getElementById("rotate-thumb-grid").innerHTML = "";
-    document.getElementById("rotate-thumb-grid").classList.add("hidden");
-    document.getElementById("rotate-thumb-loading").classList.remove("hidden");
-    updateSelCount("rotate-sel-count", 0);
-
-    await renderRotateThumbnails();
-  } catch (err) {
-    showToast(t("toast_read_fail"), "error");
-    console.error(err);
+async function getRotatePdfjsDoc(fileUid) {
+  const entry = await getRotateFileEntry(fileUid);
+  if (!entry) return null;
+  if (!entry.pdfjsDoc) {
+    const buf = await entry.file.arrayBuffer();
+    entry.pdfjsDoc = await pdfjsLib.getDocument({ data: buf }).promise;
   }
+  return entry.pdfjsDoc;
+}
+
+async function addRotateFiles(files) {
+  const pdfFiles = files.filter((f) => f.type === "application/pdf");
+  if (!pdfFiles.length) return showToast(t("toast_only_pdf"), "error");
+  if (pdfFiles.length < files.length) showToast(t("toast_only_pdf"), "error");
+
+  document.getElementById("rotate-thumb-grid").classList.add("hidden");
+  document.getElementById("rotate-thumb-loading").classList.remove("hidden");
+  document.getElementById("rotate-thumb-loading").innerHTML = `
+    <svg class="w-8 h-8 animate-spin text-teal-500" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+    </svg>
+    <span class="text-sm font-body">${t("rotate_thumb_loading")}</span>
+  `;
+  document.getElementById("rotate-thumb-loading").className =
+    "flex flex-col items-center gap-3 py-8 text-slate-500";
+
+  const { PDFDocument } = PDFLib;
+  for (const f of pdfFiles) {
+    try {
+      const buf = await f.arrayBuffer();
+      const pdf = await PDFDocument.load(buf);
+      const numPages = pdf.getPageCount();
+      const baseRotations = pdf
+        .getPages()
+        .map((p) => p.getRotation().angle || 0);
+      const fileUid = nextRotateFileUid++;
+      rotateFileEntries.push({
+        uid: fileUid,
+        file: f,
+        numPages,
+        pdfjsDoc: null,
+      });
+      for (let i = 0; i < numPages; i++) {
+        rotatePages.push({
+          uid: nextRotatePageUid++,
+          fileUid,
+          pageIndexInFile: i,
+          baseRotation: baseRotations[i],
+          delta: 0,
+        });
+      }
+    } catch (err) {
+      showToast(t("toast_read_fail"), "error");
+      console.error(err);
+    }
+  }
+
+  renderRotateFileList();
+  document
+    .getElementById("rotate-options")
+    .classList.toggle("hidden", rotatePages.length === 0);
+  document.getElementById("rotate-btn").disabled = rotatePages.length === 0;
+  document.getElementById("rotate-result").classList.add("hidden");
+
+  await renderRotateThumbnails();
+}
+
+function renderRotateFileList() {
+  const wrap = document.getElementById("rotate-file-info");
+  const list = document.getElementById("rotate-file-list");
+  const summary = document.getElementById("rotate-file-summary");
+
+  if (!rotateFileEntries.length) {
+    wrap.classList.add("hidden");
+    list.innerHTML = "";
+    summary.textContent = "";
+    return;
+  }
+
+  wrap.classList.remove("hidden");
+  const multi = rotateFileEntries.length > 1;
+
+  list.innerHTML = rotateFileEntries
+    .map((entry) => {
+      const swatch = multi
+        ? `<span class="w-2 h-2 rounded-full flex-shrink-0" style="background:${rotateFileColor(entry.uid)}"></span>`
+        : "";
+      return `
+        <div class="file-card rounded-xl p-3.5 flex items-center gap-3">
+          ${swatch}
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(20,184,166,0.12)">
+            <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-white text-sm font-display font-medium truncate">${escapeHtml(entry.file.name)}</p>
+            <p class="text-slate-500 text-xs font-body">${entry.numPages} ${t("pages_unit")} · ${formatSize(entry.file.size)}</p>
+          </div>
+          <button onclick="removeRotateFile(${entry.uid})" class="text-slate-600 hover:text-red-400 transition-colors p-1 flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>`;
+    })
+    .join("");
+
+  const totalSize = rotateFileEntries.reduce((s, e) => s + e.file.size, 0);
+  summary.textContent = t("rotate_files_summary", {
+    files: rotateFileEntries.length,
+    pages: rotatePages.length,
+    size: formatSize(totalSize),
+  });
+}
+
+function removeRotateFile(fileUid) {
+  rotateFileEntries = rotateFileEntries.filter((e) => e.uid !== fileUid);
+  rotatePages = rotatePages.filter((p) => p.fileUid !== fileUid);
+  selectedRotatePages.forEach((uid) => {
+    if (!rotatePages.find((p) => p.uid === uid))
+      selectedRotatePages.delete(uid);
+  });
+
+  if (!rotateFileEntries.length) {
+    clearRotate();
+    return;
+  }
+
+  renderRotateFileList();
+  document.getElementById("rotate-btn").disabled = rotatePages.length === 0;
+  updateSelCount("rotate-sel-count", selectedRotatePages.size);
+  renderRotateThumbnails();
 }
 
 function clearRotate() {
-  rotateFile = null;
-  rotatePageCount = 0;
-  rotateBaseRotations = [];
-  rotateDeltas = [];
+  rotateFileEntries = [];
+  rotatePages = [];
   selectedRotatePages = new Set();
   rotateThumbsRendered = false;
+  rotateSortable = null;
   document.getElementById("rotate-file-info").classList.add("hidden");
+  document.getElementById("rotate-file-list").innerHTML = "";
+  document.getElementById("rotate-file-summary").textContent = "";
   document.getElementById("rotate-options").classList.add("hidden");
   document.getElementById("rotate-btn").disabled = true;
   document.getElementById("rotate-result").classList.add("hidden");
   document.getElementById("rotate-thumb-grid").innerHTML = "";
+  updateSelCount("rotate-sel-count", 0);
 }
 
 async function renderRotateThumbnails() {
-  if (!rotateFile) return;
   const grid = document.getElementById("rotate-thumb-grid");
   const loading = document.getElementById("rotate-thumb-loading");
   grid.innerHTML = "";
+
+  if (!rotatePages.length) {
+    loading.classList.add("hidden");
+    grid.classList.add("hidden");
+    return;
+  }
+
   loading.classList.remove("hidden");
   grid.classList.add("hidden");
 
-  try {
-    const buf = await rotateFile.arrayBuffer();
-    const pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
-    const numPages = pdfDoc.numPages;
+  const multi = rotateFileEntries.length > 1;
 
-    for (let i = 1; i <= numPages; i++) {
-      const idx = i - 1;
-      const page = await pdfDoc.getPage(i);
+  try {
+    for (let i = 0; i < rotatePages.length; i++) {
+      const page = rotatePages[i];
+      const entry = await getRotateFileEntry(page.fileUid);
+      const pdfjsDoc = await getRotatePdfjsDoc(page.fileUid);
+      const pjsPage = await pdfjsDoc.getPage(page.pageIndexInFile + 1);
 
       const thumb = document.createElement("div");
       thumb.className = "page-thumb";
-      thumb.dataset.page = idx;
+      thumb.dataset.uid = page.uid;
+      if (multi) {
+        thumb.title = `${entry.file.name} — ${t("pages_unit")} ${page.pageIndexInFile + 1}`;
+      }
       thumb.innerHTML = `
+            ${multi ? `<div class="page-file-strip" style="background:${rotateFileColor(page.fileUid)}"></div>` : ""}
             <div class="thumb-canvas-wrap"></div>
+            <button type="button" class="page-drag-handle" title="${t("rotate_drag_title")}" aria-label="${t("rotate_drag_title")}">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <circle cx="6" cy="5" r="1.3"/><circle cx="14" cy="5" r="1.3"/>
+                <circle cx="6" cy="10" r="1.3"/><circle cx="14" cy="10" r="1.3"/>
+                <circle cx="6" cy="15" r="1.3"/><circle cx="14" cy="15" r="1.3"/>
+              </svg>
+            </button>
             <button type="button" class="rotate-page-btn" title="${t("rotate_page_title")}">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
@@ -883,22 +1057,43 @@ async function renderRotateThumbnails() {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
               </svg>
             </button>
-            <span class="page-num">${i}</span>
+            <span class="page-num">${i + 1}</span>
           `;
       grid.appendChild(thumb);
 
-      await renderRotateThumbCanvas(page, thumb, idx);
+      await renderRotateThumbCanvas(page, thumb);
 
-      thumb.querySelector(".rotate-page-btn").addEventListener("click", async (ev) => {
-        ev.stopPropagation();
-        rotateDeltas[idx] = (rotateDeltas[idx] + 90) % 360;
-        await renderRotateThumbCanvas(page, thumb, idx);
+      thumb
+        .querySelector(".rotate-page-btn")
+        .addEventListener("click", async (ev) => {
+          ev.stopPropagation();
+          page.delta = (page.delta + 90) % 360;
+          await renderRotateThumbCanvas(page, thumb);
+        });
+      thumb
+        .querySelector(".page-select-box")
+        .addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          toggleRotatePage(thumb, page.uid);
+        });
+      thumb.addEventListener("click", () => toggleRotatePage(thumb, page.uid));
+    }
+
+    if (!rotateSortable) {
+      rotateSortable = Sortable.create(grid, {
+        animation: 180,
+        handle: ".page-drag-handle",
+        ghostClass: "sortable-ghost",
+        chosenClass: "sortable-chosen",
+        onEnd: () => {
+          const newOrder = Array.from(grid.querySelectorAll(".page-thumb")).map(
+            (el) =>
+              rotatePages.find((p) => p.uid === parseInt(el.dataset.uid, 10)),
+          );
+          rotatePages = newOrder;
+          renumberRotateThumbs();
+        },
       });
-      thumb.querySelector(".page-select-box").addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        toggleRotatePage(thumb, idx);
-      });
-      thumb.addEventListener("click", () => toggleRotatePage(thumb, idx));
     }
 
     loading.classList.add("hidden");
@@ -910,28 +1105,37 @@ async function renderRotateThumbnails() {
   }
 }
 
-async function renderRotateThumbCanvas(page, thumbEl, idx) {
+function renumberRotateThumbs() {
+  const grid = document.getElementById("rotate-thumb-grid");
+  Array.from(grid.querySelectorAll(".page-thumb")).forEach((el, i) => {
+    const numEl = el.querySelector(".page-num");
+    if (numEl) numEl.textContent = i + 1;
+  });
+}
+
+async function renderRotateThumbCanvas(page, thumbEl) {
   const wrap = thumbEl.querySelector(".thumb-canvas-wrap");
-  const totalRotation =
-    ((rotateBaseRotations[idx] || 0) + rotateDeltas[idx] + 360) % 360;
-  const viewport = page.getViewport({ scale: 0.4, rotation: totalRotation });
+  const pdfjsDoc = await getRotatePdfjsDoc(page.fileUid);
+  const pjsPage = await pdfjsDoc.getPage(page.pageIndexInFile + 1);
+  const totalRotation = ((page.baseRotation || 0) + page.delta + 360) % 360;
+  const viewport = pjsPage.getViewport({ scale: 0.4, rotation: totalRotation });
   const canvas = document.createElement("canvas");
   canvas.width = viewport.width;
   canvas.height = viewport.height;
   const ctx = canvas.getContext("2d");
-  await page.render({ canvasContext: ctx, viewport }).promise;
+  await pjsPage.render({ canvasContext: ctx, viewport }).promise;
   wrap.innerHTML = "";
   wrap.appendChild(canvas);
 
-  thumbEl.classList.toggle("rotated", rotateDeltas[idx] % 360 !== 0);
+  thumbEl.classList.toggle("rotated", page.delta % 360 !== 0);
 }
 
-function toggleRotatePage(thumb, idx) {
-  if (selectedRotatePages.has(idx)) {
-    selectedRotatePages.delete(idx);
+function toggleRotatePage(thumb, uid) {
+  if (selectedRotatePages.has(uid)) {
+    selectedRotatePages.delete(uid);
     thumb.classList.remove("selected");
   } else {
-    selectedRotatePages.add(idx);
+    selectedRotatePages.add(uid);
     thumb.classList.add("selected");
   }
   updateSelCount("rotate-sel-count", selectedRotatePages.size);
@@ -939,8 +1143,8 @@ function toggleRotatePage(thumb, idx) {
 
 function selectAllRotatePages() {
   document.querySelectorAll("#rotate-thumb-grid .page-thumb").forEach((th) => {
-    const idx = parseInt(th.dataset.page);
-    selectedRotatePages.add(idx);
+    const uid = parseInt(th.dataset.uid, 10);
+    selectedRotatePages.add(uid);
     th.classList.add("selected");
   });
   updateSelCount("rotate-sel-count", selectedRotatePages.size);
@@ -955,72 +1159,80 @@ function deselectAllRotatePages() {
 }
 
 async function rotateSelected(delta) {
-  if (!rotateFile || !rotatePageCount) return;
+  if (!rotatePages.length) return;
   const targets =
     selectedRotatePages.size > 0
       ? [...selectedRotatePages]
-      : rotateDeltas.map((_, i) => i);
+      : rotatePages.map((p) => p.uid);
   if (!targets.length) return;
 
-  const buf = await rotateFile.arrayBuffer();
-  const pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
-  for (const idx of targets) {
-    rotateDeltas[idx] = ((rotateDeltas[idx] + delta) % 360 + 360) % 360;
+  for (const uid of targets) {
+    const page = rotatePages.find((p) => p.uid === uid);
+    if (!page) continue;
+    page.delta = (((page.delta + delta) % 360) + 360) % 360;
     const thumb = document.querySelector(
-      `#rotate-thumb-grid .page-thumb[data-page="${idx}"]`,
+      `#rotate-thumb-grid .page-thumb[data-uid="${uid}"]`,
     );
-    if (thumb) {
-      const page = await pdfDoc.getPage(idx + 1);
-      await renderRotateThumbCanvas(page, thumb, idx);
-    }
+    if (thumb) await renderRotateThumbCanvas(page, thumb);
   }
 }
 
 async function resetAllRotations() {
-  if (!rotateFile || !rotatePageCount) return;
-  rotateDeltas = rotateDeltas.map(() => 0);
-  const buf = await rotateFile.arrayBuffer();
-  const pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+  if (!rotatePages.length) return;
+  rotatePages.forEach((p) => (p.delta = 0));
   const thumbs = document.querySelectorAll("#rotate-thumb-grid .page-thumb");
   for (const thumb of thumbs) {
-    const idx = parseInt(thumb.dataset.page);
-    const page = await pdfDoc.getPage(idx + 1);
-    await renderRotateThumbCanvas(page, thumb, idx);
+    const uid = parseInt(thumb.dataset.uid, 10);
+    const page = rotatePages.find((p) => p.uid === uid);
+    if (page) await renderRotateThumbCanvas(page, thumb);
   }
 }
 
 async function applyRotateAndDownload() {
-  if (!rotateFile) return;
+  if (!rotatePages.length) return;
   const btn = document.getElementById("rotate-btn");
   btn.disabled = true;
   showProgress("rotate", true);
 
   try {
     const { PDFDocument, degrees } = PDFLib;
-    const buf = await rotateFile.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(buf);
-    const pages = pdfDoc.getPages();
+    const outDoc = await PDFDocument.create();
+    const libDocCache = new Map();
+    const getLibDoc = async (fileUid) => {
+      if (!libDocCache.has(fileUid)) {
+        const entry = await getRotateFileEntry(fileUid);
+        const buf = await entry.file.arrayBuffer();
+        libDocCache.set(fileUid, await PDFDocument.load(buf));
+      }
+      return libDocCache.get(fileUid);
+    };
 
-    pages.forEach((p, idx) => {
-      setProgress("rotate", Math.round(((idx + 1) / pages.length) * 80));
-      const base = p.getRotation().angle || 0;
-      const total = (base + (rotateDeltas[idx] || 0) + 360) % 360;
-      p.setRotation(degrees(total));
-    });
+    let changedCount = 0;
+    for (let i = 0; i < rotatePages.length; i++) {
+      const page = rotatePages[i];
+      setProgress("rotate", Math.round(((i + 1) / rotatePages.length) * 80));
+      const srcDoc = await getLibDoc(page.fileUid);
+      const [copied] = await outDoc.copyPages(srcDoc, [page.pageIndexInFile]);
+      const total = ((page.baseRotation || 0) + page.delta + 360) % 360;
+      copied.setRotation(degrees(total));
+      outDoc.addPage(copied);
+      if (page.delta % 360 !== 0) changedCount++;
+    }
 
     setProgress("rotate", 90);
-    const bytes = await pdfDoc.save();
+    const bytes = await outDoc.save();
     const blob = new Blob([bytes], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     setProgress("rotate", 100);
-
-    const changedCount = rotateDeltas.filter((d) => d % 360 !== 0).length;
 
     setTimeout(() => {
       showProgress("rotate", false);
       const a = document.getElementById("rotate-download");
       a.href = url;
-      const baseName = rotateFile.name.replace(/\.pdf$/i, "");
+      const baseName =
+        rotateFileEntries.length === 1
+          ? rotateFileEntries[0].file.name.replace(/\.pdf$/i, "")
+          : "gabungan";
       a.download = `${baseName}_diputar.pdf`;
       document.getElementById("rotate-result-info").textContent = t(
         "rotate_result_info",
