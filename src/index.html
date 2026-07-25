@@ -1153,6 +1153,160 @@
       </footer>
     </div>
 
+    <!-- Zoom / Page Preview Modal (shared by Gabung, Pisah & Putar) -->
+    <div
+      id="zoom-modal"
+      class="zoom-overlay hidden"
+      onclick="handleZoomOverlayClick(event)"
+    >
+      <div class="zoom-box" onclick="event.stopPropagation()">
+        <div class="zoom-box-header">
+          <div class="min-w-0">
+            <p id="zoom-title" class="zoom-title"></p>
+            <p id="zoom-subtitle" class="zoom-subtitle"></p>
+          </div>
+          <button
+            type="button"
+            id="zoom-close-btn"
+            class="zoom-close-btn"
+            onclick="closeZoomModal()"
+            data-i18n-title="zoom_close_title"
+            aria-label="Tutup"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="zoom-box-body">
+          <button
+            type="button"
+            id="zoom-prev-btn"
+            class="zoom-nav-btn zoom-nav-prev"
+            onclick="zoomNav(-1)"
+            data-i18n-title="zoom_prev_title"
+            aria-label="Sebelumnya"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </button>
+          <div id="zoom-canvas-wrap" class="zoom-canvas-wrap">
+            <div id="zoom-spinner" class="zoom-spinner">
+              <svg
+                class="w-8 h-8 animate-spin text-teal-500"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                />
+              </svg>
+            </div>
+          </div>
+          <button
+            type="button"
+            id="zoom-next-btn"
+            class="zoom-nav-btn zoom-nav-next"
+            onclick="zoomNav(1)"
+            data-i18n-title="zoom_next_title"
+            aria-label="Berikutnya"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="zoom-box-footer">
+          <span id="zoom-page-indicator" class="zoom-page-indicator"></span>
+          <div id="zoom-rotate-controls" class="zoom-rotate-controls hidden">
+            <button
+              type="button"
+              class="btn-ghost"
+              onclick="zoomRotate(-90)"
+              data-i18n-title="rotate_left_title"
+              aria-label="Putar kiri"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+                />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn-ghost"
+              onclick="zoomRotate(90)"
+              data-i18n-title="rotate_right_title"
+              aria-label="Putar kanan"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 15l6-6m0 0l-6-6m6 6H9a6 6 0 000 12h3"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="js/app.js"></script>
   </body>
 </html>

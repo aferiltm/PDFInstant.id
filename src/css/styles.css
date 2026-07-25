@@ -6,6 +6,63 @@ body {
   font-family: "DM Sans", sans-serif;
 }
 
+/* ─── Core animation keyframes & utility classes ─────
+   NOTE: these back the animate-fade-in / animate-slide-up / animate-pulse-soft
+   classes used throughout the markup (originally only declared in the Tailwind
+   theme config, which needs a build step to become real CSS). Defining them
+   here guarantees they always work, independent of the Tailwind build. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+.animate-slide-up {
+  animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+/* Staggered pop-in for grid thumbnails / list rows as they render */
+@keyframes thumbPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.thumb-pop-in {
+  animation: thumbPopIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 .glass {
   background: rgba(22, 33, 32, 0.7);
   backdrop-filter: blur(16px);
@@ -65,7 +122,7 @@ body {
   box-shadow: 0 8px 25px rgba(20, 184, 166, 0.45);
 }
 .btn-primary:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 .btn-primary:disabled {
   opacity: 0.4;
@@ -80,6 +137,17 @@ body {
 }
 .btn-ghost:hover {
   background: rgba(45, 212, 191, 0.15);
+  transform: translateY(-1px);
+}
+.btn-ghost:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.tab-active {
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(20, 184, 166, 0.35);
+  transform: scale(1.015);
 }
 
 .progress-bar {
@@ -249,43 +317,56 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
-.rotate-page-btn {
+/* Hover-revealed action toolbar centered on a page thumbnail
+   (used by both the Rotate tab — rotate + zoom — and the Split tab — zoom only) */
+.thumb-hover-actions {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.page-thumb:hover .thumb-hover-actions {
+  opacity: 1;
+}
+
+.rotate-page-btn,
+.zoom-page-btn {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: rgba(10, 15, 14, 0.55);
+  background: rgba(10, 15, 14, 0.6);
   border: 1.5px solid rgba(45, 212, 191, 0.5);
   color: #5eead4;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
   transition: all 0.2s ease;
-  z-index: 3;
   backdrop-filter: blur(4px);
+  padding: 0;
 }
-.page-thumb:hover .rotate-page-btn {
-  opacity: 1;
-}
-.rotate-page-btn:hover {
+.rotate-page-btn:hover,
+.zoom-page-btn:hover {
   background: #14b8a6;
   border-color: #14b8a6;
   color: #fff;
-  transform: translate(-50%, -50%) scale(1.08);
+  transform: scale(1.1);
 }
-.rotate-page-btn:active {
-  transform: translate(-50%, -50%) scale(0.96);
+.rotate-page-btn:active,
+.zoom-page-btn:active {
+  transform: scale(0.94);
 }
 
 /* Small always-visible affordance on touch devices where hover doesn't apply */
 @media (hover: none) {
-  .rotate-page-btn {
-    opacity: 0.85;
+  .thumb-hover-actions {
+    opacity: 0.9;
   }
 }
 
@@ -462,5 +543,267 @@ body {
     opacity: 1;
 
     transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Merge file thumbnail preview + zoom trigger ────── */
+.merge-thumb-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(20, 184, 166, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.merge-thumb-wrap canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+.merge-thumb-zoom-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 15, 14, 0.55);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  padding: 0;
+}
+.merge-thumb-wrap:hover .merge-thumb-zoom-btn {
+  opacity: 1;
+}
+@media (hover: none) {
+  .merge-thumb-zoom-btn {
+    opacity: 0.85;
+  }
+}
+
+/* ─── Zoom / Page Preview Modal ───────────────────────
+   Shared by the Merge, Split, and Rotate tabs so the user can inspect
+   exactly which page/file they are looking at before committing. */
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(5, 9, 8, 0.82);
+  backdrop-filter: blur(10px);
+  animation: overlayFadeIn 0.2s ease;
+}
+.zoom-overlay.hidden {
+  display: none;
+}
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.zoom-box {
+  width: 100%;
+  max-width: 640px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(17, 25, 24, 0.97);
+  border: 1px solid rgba(45, 212, 191, 0.18);
+  border-radius: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  animation: zoomBoxIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes zoomBoxIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.zoom-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(45, 212, 191, 0.1);
+  flex-shrink: 0;
+}
+.zoom-title {
+  color: #fff;
+  font-family: "Syne", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.zoom-subtitle {
+  color: #64748b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  margin-top: 2px;
+}
+.zoom-close-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.zoom-close-btn:hover {
+  background: rgba(248, 113, 113, 0.12);
+  color: #f87171;
+  transform: rotate(90deg);
+}
+
+.zoom-box-body {
+  position: relative;
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: auto;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(20, 184, 166, 0.06),
+    transparent 60%
+  );
+}
+.zoom-canvas-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  width: 100%;
+}
+.zoom-canvas-wrap canvas {
+  max-width: 100%;
+  max-height: 68vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: zoomPageIn 0.22s ease;
+}
+@keyframes zoomPageIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.zoom-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.zoom-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(10, 15, 14, 0.7);
+  border: 1.5px solid rgba(45, 212, 191, 0.3);
+  color: #5eead4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 4;
+  transition: all 0.18s ease;
+  padding: 0;
+}
+.zoom-nav-btn:hover {
+  background: #14b8a6;
+  border-color: #14b8a6;
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+.zoom-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.zoom-nav-prev {
+  left: 12px;
+}
+.zoom-nav-next {
+  right: 12px;
+}
+
+.zoom-box-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(45, 212, 191, 0.1);
+  flex-shrink: 0;
+}
+.zoom-page-indicator {
+  color: #64748b;
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+}
+.zoom-rotate-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.zoom-rotate-controls button {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .zoom-nav-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .zoom-box-body {
+    padding: 12px;
+  }
+  .zoom-box {
+    border-radius: 18px;
   }
 }

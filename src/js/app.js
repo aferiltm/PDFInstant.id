@@ -68,6 +68,13 @@ const translations = {
     rotate_select_title: "Pilih halaman ini",
     rotate_drag_title: "Seret untuk mengubah urutan",
     rotate_files_summary: "{files} file · {pages} halaman · {size}",
+    zoom_view_title: "Lihat halaman",
+    zoom_close_title: "Tutup",
+    zoom_prev_title: "Halaman sebelumnya",
+    zoom_next_title: "Halaman berikutnya",
+    zoom_page_indicator: "Halaman {current} dari {total}",
+    zoom_merge_subtitle: "{pages} halaman",
+    zoom_thumb_error: "Gagal memuat halaman.",
     footer_text:
       "File tidak dikirim ke server — semua diproses langsung di browser kamu 🔒",
     toast_only_pdf: "Hanya file PDF yang diterima!",
@@ -149,6 +156,13 @@ const translations = {
     rotate_select_title: "Select this page",
     rotate_drag_title: "Drag to reorder",
     rotate_files_summary: "{files} files · {pages} pages · {size}",
+    zoom_view_title: "View page",
+    zoom_close_title: "Close",
+    zoom_prev_title: "Previous page",
+    zoom_next_title: "Next page",
+    zoom_page_indicator: "Page {current} of {total}",
+    zoom_merge_subtitle: "{pages} pages",
+    zoom_thumb_error: "Failed to load the page.",
     footer_text:
       "Files are never sent to a server — everything is processed right in your browser 🔒",
     toast_only_pdf: "Only PDF files are accepted!",
@@ -231,6 +245,13 @@ const translations = {
     rotate_select_title: "Piliin ang pahinang ito",
     rotate_drag_title: "I-drag para ayusin ang pagkakasunod-sunod",
     rotate_files_summary: "{files} file · {pages} pahina · {size}",
+    zoom_view_title: "Tingnan ang pahina",
+    zoom_close_title: "Isara",
+    zoom_prev_title: "Nakaraang pahina",
+    zoom_next_title: "Susunod na pahina",
+    zoom_page_indicator: "Pahina {current} ng {total}",
+    zoom_merge_subtitle: "{pages} pahina",
+    zoom_thumb_error: "Hindi na-load ang pahina.",
     footer_text:
       "Hindi ipinapadala ang mga file sa server — lahat ay pinoproseso mismo sa browser mo 🔒",
     toast_only_pdf: "PDF file lang ang tinatanggap!",
@@ -319,7 +340,9 @@ document.addEventListener("click", (e) => {
 
 // ─── State ─────────────────────────────────────────
 let mergeFiles = [];
+let mergePdfjsCache = new Map(); // File -> pdf.js document, for thumbnails/zoom
 let splitFile = null;
+let splitPdfjsDoc = null; // cached pdf.js document for the loaded split file
 let splitPageCount = 0;
 let splitMode = "all";
 let splitResults = [];
@@ -353,6 +376,11 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// ─── Zoom / Preview state (shared by Merge, Split, Rotate) ──
+let zoomItems = []; // array of descriptors, see openZoom()
+let zoomIndex = 0;
+let zoomRenderToken = 0; // guards against out-of-order async renders
+
 // ─── Tab Switching ──────────────────────────────────
 function switchTab(tab) {
   const panels = {
@@ -362,9 +390,16 @@ function switchTab(tab) {
   };
   const tabs = { merge: "tab-merge", split: "tab-split", rotate: "tab-rotate" };
   Object.keys(panels).forEach((key) => {
-    document
-      .getElementById(panels[key])
-      .classList.toggle("hidden", key !== tab);
+    const panel = document.getElementById(panels[key]);
+    if (key === tab) {
+      panel.classList.remove("hidden");
+      // restart the entrance animation on every visit for a bit of life
+      panel.classList.remove("animate-slide-up");
+      void panel.offsetWidth; // force reflow so the animation replays
+      panel.classList.add("animate-slide-up");
+    } else {
+      panel.classList.add("hidden");
+    }
   });
   Object.keys(tabs).forEach((key) => {
     const btn = document.getElementById(tabs[key]);
@@ -376,6 +411,121 @@ function switchTab(tab) {
       btn.classList.add("text-slate-400");
     }
   });
+}
+
+// ─── Zoom / Preview Modal (shared) ──────────────────
+// items: array of descriptors, each one of:
+//   { kind: "rotate", page }                 -> live rotate-tab page object
+//   { kind: "plain", getDoc, pageIndex, label } -> static page (split/merge)
+function openZoom(items, startIndex, opts) {
+  if (!items.length) return;
+  zoomItems = items;
+  zoomIndex = Math.max(0, Math.min(startIndex, items.length - 1));
+
+  const modal = document.getElementById("zoom-modal");
+  modal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+
+  document
+    .getElementById("zoom-rotate-controls")
+    .classList.toggle("hidden", !(opts && opts.allowRotate));
+
+  renderZoomCurrent();
+}
+
+function closeZoomModal() {
+  const modal = document.getElementById("zoom-modal");
+  modal.classList.add("hidden");
+  document.body.style.overflow = "";
+  zoomItems = [];
+}
+
+function handleZoomOverlayClick(e) {
+  if (e.target.id === "zoom-modal") closeZoomModal();
+}
+
+function zoomNav(delta) {
+  if (!zoomItems.length) return;
+  const next = zoomIndex + delta;
+  if (next < 0 || next >= zoomItems.length) return;
+  zoomIndex = next;
+  renderZoomCurrent();
+}
+
+async function zoomRotate(delta) {
+  const item = zoomItems[zoomIndex];
+  if (!item || item.kind !== "rotate") return;
+  item.page.delta = (((item.page.delta + delta) % 360) + 360) % 360;
+  // keep the underlying thumbnail grid in sync
+  const thumb = document.querySelector(
+    `#rotate-thumb-grid .page-thumb[data-uid="${item.page.uid}"]`,
+  );
+  if (thumb) await renderRotateThumbCanvas(item.page, thumb);
+  await renderZoomCurrent();
+}
+
+document.addEventListener("keydown", (e) => {
+  const modal = document.getElementById("zoom-modal");
+  if (!modal || modal.classList.contains("hidden")) return;
+  if (e.key === "Escape") closeZoomModal();
+  else if (e.key === "ArrowLeft") zoomNav(-1);
+  else if (e.key === "ArrowRight") zoomNav(1);
+});
+
+async function renderZoomCurrent() {
+  const token = ++zoomRenderToken;
+  const item = zoomItems[zoomIndex];
+  if (!item) return;
+
+  const wrap = document.getElementById("zoom-canvas-wrap");
+  wrap.innerHTML = `
+    <div class="zoom-spinner">
+      <svg class="w-8 h-8 animate-spin text-teal-500" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+      </svg>
+    </div>
+  `;
+
+  document.getElementById("zoom-title").textContent = item.title || "";
+  document.getElementById("zoom-subtitle").textContent = item.subtitle || "";
+  document.getElementById("zoom-page-indicator").textContent = t(
+    "zoom_page_indicator",
+    { current: zoomIndex + 1, total: zoomItems.length },
+  );
+  document.getElementById("zoom-prev-btn").disabled = zoomIndex === 0;
+  document.getElementById("zoom-next-btn").disabled =
+    zoomIndex === zoomItems.length - 1;
+
+  try {
+    let pjsPage, rotation;
+    if (item.kind === "rotate") {
+      const pdfjsDoc = await getRotatePdfjsDoc(item.page.fileUid);
+      pjsPage = await pdfjsDoc.getPage(item.page.pageIndexInFile + 1);
+      rotation = ((item.page.baseRotation || 0) + item.page.delta + 360) % 360;
+    } else {
+      const pdfjsDoc = await item.getDoc();
+      pjsPage = await pdfjsDoc.getPage(item.pageIndex + 1);
+      rotation = 0;
+    }
+
+    if (token !== zoomRenderToken) return; // a newer render superseded this one
+
+    const viewport = pjsPage.getViewport({ scale: 1.6, rotation });
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext("2d");
+    await pjsPage.render({ canvasContext: ctx, viewport }).promise;
+
+    if (token !== zoomRenderToken) return;
+    wrap.innerHTML = "";
+    wrap.appendChild(canvas);
+  } catch (err) {
+    if (token !== zoomRenderToken) return;
+    wrap.innerHTML = `<p class="text-red-400 text-sm py-4 text-center font-body">${t("zoom_thumb_error")}</p>`;
+    console.error(err);
+  }
 }
 
 // ─── Drag & Drop ────────────────────────────────────
@@ -416,20 +566,27 @@ function renderMergeList() {
   mergeFiles.forEach((f, i) => {
     const li = document.createElement("li");
     li.dataset.index = i;
-    li.className = "file-card rounded-xl p-3.5 flex items-center gap-3";
+    li.className =
+      "file-card rounded-xl p-3.5 flex items-center gap-3 thumb-pop-in";
+    li.style.animationDelay = `${Math.min(i, 20) * 0.03}s`;
     li.innerHTML = `
           <div class="drag-handle text-slate-600 hover:text-teal-400 transition-colors flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
             </svg>
           </div>
-          <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background:rgba(20,184,166,0.12)">
+          <div class="merge-thumb-wrap">
             <svg class="w-4 h-4 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
             </svg>
+            <button type="button" class="merge-thumb-zoom-btn" title="${t("zoom_view_title")}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+              </svg>
+            </button>
           </div>
           <div class="flex-1 min-w-0">
-            <p class="text-white text-sm font-display font-medium truncate">${f.name}</p>
+            <p class="text-white text-sm font-display font-medium truncate">${escapeHtml(f.name)}</p>
             <p class="text-slate-500 text-xs font-body">${formatSize(f.size)}</p>
           </div>
           <button onclick="removeMergeFile(${i})" class="text-slate-600 hover:text-red-400 transition-colors p-1 flex-shrink-0">
@@ -438,7 +595,15 @@ function renderMergeList() {
             </svg>
           </button>
         `;
+    li.querySelector(".merge-thumb-zoom-btn").addEventListener(
+      "click",
+      (ev) => {
+        ev.stopPropagation();
+        openMergeZoom(f);
+      },
+    );
     list.appendChild(li);
+    renderMergeThumb(f, li.querySelector(".merge-thumb-wrap"));
   });
 
   const container = document.getElementById("merge-list");
@@ -467,13 +632,64 @@ function renderMergeList() {
   document.getElementById("merge-result").classList.add("hidden");
 }
 
+async function getMergePdfjsDoc(file) {
+  if (!mergePdfjsCache.has(file)) {
+    try {
+      const buf = await file.arrayBuffer();
+      mergePdfjsCache.set(
+        file,
+        await pdfjsLib.getDocument({ data: buf }).promise,
+      );
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }
+  return mergePdfjsCache.get(file);
+}
+
+async function renderMergeThumb(file, wrapEl) {
+  if (!wrapEl) return;
+  const pdfjsDoc = await getMergePdfjsDoc(file);
+  if (!pdfjsDoc || !wrapEl.isConnected) return;
+  try {
+    const page = await pdfjsDoc.getPage(1);
+    const viewport = page.getViewport({ scale: 0.15 });
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport })
+      .promise;
+    const icon = wrapEl.querySelector("svg");
+    if (icon) icon.replaceWith(canvas);
+    else wrapEl.insertBefore(canvas, wrapEl.firstChild);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+async function openMergeZoom(file) {
+  const pdfjsDoc = await getMergePdfjsDoc(file);
+  const count = pdfjsDoc ? pdfjsDoc.numPages : 1;
+  const items = Array.from({ length: count }, (_, i) => ({
+    kind: "plain",
+    getDoc: () => getMergePdfjsDoc(file),
+    pageIndex: i,
+    title: file.name,
+    subtitle: t("zoom_merge_subtitle", { pages: count }),
+  }));
+  openZoom(items, 0, { allowRotate: false });
+}
+
 function removeMergeFile(i) {
-  mergeFiles.splice(i, 1);
+  const [removed] = mergeFiles.splice(i, 1);
+  if (removed) mergePdfjsCache.delete(removed);
   renderMergeList();
 }
 
 function clearMerge() {
   mergeFiles = [];
+  mergePdfjsCache = new Map();
   mergeSortable = null;
   renderMergeList();
 }
@@ -541,6 +757,7 @@ async function setSplitFile(f) {
   if (f.type !== "application/pdf")
     return showToast(t("toast_only_pdf"), "error");
   splitFile = f;
+  splitPdfjsDoc = null;
   thumbsRendered = false;
   selectedPages = new Set();
   try {
@@ -573,6 +790,7 @@ async function setSplitFile(f) {
 
 function clearSplit() {
   splitFile = null;
+  splitPdfjsDoc = null;
   splitPageCount = 0;
   thumbsRendered = false;
   selectedPages = new Set();
@@ -603,6 +821,15 @@ function setSplitMode(mode) {
 }
 
 // ─── THUMBNAIL RENDERER (Split) ─────────────────────
+async function getSplitPdfjsDoc() {
+  if (!splitFile) return null;
+  if (!splitPdfjsDoc) {
+    const buf = await splitFile.arrayBuffer();
+    splitPdfjsDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+  }
+  return splitPdfjsDoc;
+}
+
 async function renderThumbnails() {
   if (!splitFile || thumbsRendered) return;
   const grid = document.getElementById("thumb-grid");
@@ -612,8 +839,7 @@ async function renderThumbnails() {
   grid.classList.add("hidden");
 
   try {
-    const buf = await splitFile.arrayBuffer();
-    const pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+    const pdfDoc = await getSplitPdfjsDoc();
     const numPages = pdfDoc.numPages;
 
     for (let i = 1; i <= numPages; i++) {
@@ -626,7 +852,8 @@ async function renderThumbnails() {
       await page.render({ canvasContext: ctx, viewport }).promise;
 
       const thumb = document.createElement("div");
-      thumb.className = "page-thumb";
+      thumb.className = "page-thumb thumb-pop-in";
+      thumb.style.animationDelay = `${Math.min(i - 1, 24) * 0.02}s`;
       thumb.dataset.page = i - 1; // 0-indexed
       thumb.innerHTML = `
             <div class="check-icon">
@@ -634,10 +861,21 @@ async function renderThumbnails() {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
               </svg>
             </div>
+            <div class="thumb-hover-actions">
+              <button type="button" class="zoom-page-btn" title="${t("zoom_view_title")}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+                </svg>
+              </button>
+            </div>
             <span class="page-num">${i}</span>
           `;
       thumb.insertBefore(canvas, thumb.firstChild);
       thumb.addEventListener("click", () => togglePage(thumb, i - 1));
+      thumb.querySelector(".zoom-page-btn").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        openSplitZoom(i - 1);
+      });
       grid.appendChild(thumb);
     }
 
@@ -648,6 +886,21 @@ async function renderThumbnails() {
     loading.innerHTML = `<p class="text-red-400 text-sm py-4 text-center font-body">${t("split_thumb_error")}</p>`;
     console.error(err);
   }
+}
+
+function openSplitZoom(startPageIndex) {
+  if (!splitFile || !splitPageCount) return;
+  const items = Array.from({ length: splitPageCount }, (_, i) => ({
+    kind: "plain",
+    getDoc: getSplitPdfjsDoc,
+    pageIndex: i,
+    title: splitFile.name,
+    subtitle: t("zoom_page_indicator", {
+      current: i + 1,
+      total: splitPageCount,
+    }),
+  }));
+  openZoom(items, startPageIndex, { allowRotate: false });
 }
 
 function togglePage(thumb, pageIdx) {
@@ -1032,7 +1285,8 @@ async function renderRotateThumbnails() {
       const pjsPage = await pdfjsDoc.getPage(page.pageIndexInFile + 1);
 
       const thumb = document.createElement("div");
-      thumb.className = "page-thumb";
+      thumb.className = "page-thumb thumb-pop-in";
+      thumb.style.animationDelay = `${Math.min(i, 24) * 0.02}s`;
       thumb.dataset.uid = page.uid;
       if (multi) {
         thumb.title = `${entry.file.name} — ${t("pages_unit")} ${page.pageIndexInFile + 1}`;
@@ -1047,11 +1301,18 @@ async function renderRotateThumbnails() {
                 <circle cx="6" cy="15" r="1.3"/><circle cx="14" cy="15" r="1.3"/>
               </svg>
             </button>
-            <button type="button" class="rotate-page-btn" title="${t("rotate_page_title")}">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-              </svg>
-            </button>
+            <div class="thumb-hover-actions">
+              <button type="button" class="zoom-page-btn" title="${t("zoom_view_title")}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z"/>
+                </svg>
+              </button>
+              <button type="button" class="rotate-page-btn" title="${t("rotate_page_title")}">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+              </button>
+            </div>
             <button type="button" class="page-select-box" title="${t("rotate_select_title")}">
               <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
@@ -1070,6 +1331,10 @@ async function renderRotateThumbnails() {
           page.delta = (page.delta + 90) % 360;
           await renderRotateThumbCanvas(page, thumb);
         });
+      thumb.querySelector(".zoom-page-btn").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        openRotateZoom(page.uid);
+      });
       thumb
         .querySelector(".page-select-box")
         .addEventListener("click", (ev) => {
@@ -1111,6 +1376,23 @@ function renumberRotateThumbs() {
     const numEl = el.querySelector(".page-num");
     if (numEl) numEl.textContent = i + 1;
   });
+}
+
+async function openRotateZoom(startUid) {
+  if (!rotatePages.length) return;
+  const multi = rotateFileEntries.length > 1;
+  const items = [];
+  for (const page of rotatePages) {
+    const entry = await getRotateFileEntry(page.fileUid);
+    items.push({
+      kind: "rotate",
+      page,
+      title: multi ? entry.file.name : t("rotate_heading"),
+      subtitle: `${t("pages_unit")} ${page.pageIndexInFile + 1}`,
+    });
+  }
+  const startIndex = rotatePages.findIndex((p) => p.uid === startUid);
+  openZoom(items, Math.max(0, startIndex), { allowRotate: true });
 }
 
 async function renderRotateThumbCanvas(page, thumbEl) {
