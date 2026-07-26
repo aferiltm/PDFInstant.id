@@ -58,6 +58,8 @@ const translations = {
     rotate_reset_title: "Atur ulang semua rotasi",
     rotate_hint:
       "Klik halaman untuk memilih. Seret ikon di pojok kanan atas thumbnail untuk mengubah urutan halaman. Klik ikon putar di tengah untuk memutar halaman itu secara langsung.",
+    rotate_hint_touch:
+      "Tap halaman untuk memilih. Tekan & tahan sebentar lalu geser untuk mengubah urutan halaman. Tap ikon putar di tengah untuk memutar halaman itu.",
     rotate_thumb_loading: "Memuat pratinjau halaman...",
     rotate_thumb_error: "Gagal memuat pratinjau.",
     rotate_progress_label: "Memutar halaman...",
@@ -146,6 +148,8 @@ const translations = {
     rotate_reset_title: "Reset all rotations",
     rotate_hint:
       "Click a page to select it. Drag the handle in the top-right corner of a thumbnail to reorder pages. Click the rotate icon in the middle to rotate that page directly.",
+    rotate_hint_touch:
+      "Tap a page to select it. Press and hold, then drag to reorder pages. Tap the rotate icon in the middle to rotate that page.",
     rotate_thumb_loading: "Loading page previews...",
     rotate_thumb_error: "Failed to load previews.",
     rotate_progress_label: "Rotating pages...",
@@ -235,6 +239,8 @@ const translations = {
     rotate_reset_title: "I-reset lahat ng rotation",
     rotate_hint:
       "I-click ang pahina para piliin ito. I-drag ang hawakan sa kanang-itaas ng thumbnail para ayusin ang pagkakasunod-sunod ng mga pahina. I-click ang icon ng pag-ikot sa gitna para paikutin agad ang pahinang iyon.",
+    rotate_hint_touch:
+      "I-tap ang pahina para piliin ito. Pindutin nang matagal, pagkatapos i-drag para ayusin ang pagkakasunod-sunod ng mga pahina. I-tap ang icon ng pag-ikot sa gitna para paikutin ang pahinang iyon.",
     rotate_thumb_loading: "Nilo-load ang preview ng pahina...",
     rotate_thumb_error: "Hindi na-load ang preview.",
     rotate_progress_label: "Pinapaikot ang mga pahina...",
@@ -317,6 +323,13 @@ function applyTranslations() {
   if (typeof rotateFileEntries !== "undefined" && rotateFileEntries.length) {
     renderRotateFileList();
   }
+  updateRotateHint();
+}
+
+function updateRotateHint() {
+  const el = document.querySelector('[data-i18n="rotate_hint"]');
+  if (el)
+    el.textContent = isTouchDevice ? t("rotate_hint_touch") : t("rotate_hint");
 }
 
 function toggleLangMenu() {
@@ -375,6 +388,12 @@ function escapeHtml(str) {
   div.textContent = str;
   return div.innerHTML;
 }
+
+// True on phones/tablets where fine-grained drag-handle grabbing is hard;
+// used to make page reordering (Rotate tab) forgiving on touch screens.
+const isTouchDevice = window.matchMedia(
+  "(hover: none) and (pointer: coarse)",
+).matches;
 
 // ─── Zoom / Preview state (shared by Merge, Split, Rotate) ──
 let zoomItems = []; // array of descriptors, see openZoom()
@@ -1347,9 +1366,25 @@ async function renderRotateThumbnails() {
     if (!rotateSortable) {
       rotateSortable = Sortable.create(grid, {
         animation: 180,
-        handle: ".page-drag-handle",
+        // Native HTML5 drag-and-drop is unreliable on mobile browsers, so we
+        // force Sortable's own pointer-based fallback everywhere — this is
+        // what actually fixes drag-to-reorder on phones/tablets.
+        forceFallback: true,
+        fallbackTolerance: 3,
+        fallbackClass: "sortable-fallback",
+        // On touch: press-and-hold anywhere on the page to start dragging it
+        // (a light tap still selects). On desktop: only the handle drags,
+        // since a mouse is precise enough not to need the delay.
+        handle: isTouchDevice ? undefined : ".page-drag-handle",
+        delay: isTouchDevice ? 140 : 0,
+        delayOnTouchOnly: true,
+        touchStartThreshold: 8,
         ghostClass: "sortable-ghost",
         chosenClass: "sortable-chosen",
+        dragClass: "sortable-dragging",
+        onStart: () => {
+          if (navigator.vibrate) navigator.vibrate(12);
+        },
         onEnd: () => {
           const newOrder = Array.from(grid.querySelectorAll(".page-thumb")).map(
             (el) =>
